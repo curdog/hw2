@@ -1,37 +1,172 @@
 #include <iostream>
+#include <iomanip>
 #include <fstream>
-#include "stack.hpp"
+#include "stack.cpp"
+#include "stack.h"
 
 using namespace std;
 
-int main() {
-  ifstream input;
-  input.open("input.txt");
+void evaluateExpression(ifstream& inFile, ofstream& outFile, Stack<double>& stack, char& a, bool& isExpOk);
+void evaluateOpr(ofstream& out, Stack<double>& stack, char& a, bool& isExpOk);
+void discardExp(ifstream& in, ofstream& out, char& a);
+void printResult(ofstream& outFile, Stack<double>& stack, bool isExpOk);
 
-  /**
-   *infix->postfix
-   *loop
-   *if '(' push onto stack
-   *elsif ')' pop and place in output until an '('
-   *
-   *"do not put ( ) in output
-   *
-   *elsif operator
-   *if stack empty or stack top '(' then push operator
-   *elsif operator precendence is > than stack top then push oper onto stack
-   *elsif precendenc <= stack top then pop and place in output and do so for each <= then push new oper onto stack
-   *
-   *elsif number place in output
-   *
-   *else {eof} pop all values to output
-   *
-   *
-   *if any problems poping then invalid input
-   *
-   *evaluation: push until operator then eval and push ans back on stack
-   */
+int main() 
+{
 
+Stack data; //creates an object type Stack
 
-  input.close();
-  return 0;
+    bool validData;
+    char a;
+    Stack<double> stack(100);
+    ifstream input;
+    ofstream output;
+    
+    input.open("input.txt");
+    
+    if(!input)
+    {
+        cout << "The input file does not exist." << endl;
+        return 1;
+    }
+    
+    output.open("output.txt");
+    
+    output << fixed << showpoint;
+    output << setprecision(2);
+    
+    input >> a;
+    while(input)
+    {
+        stack.initializeStack();
+        expressionOk = true;
+        output << a;
+        
+        evaluateExpression(input, output, stack, a, validData);
+        printResult(output, stack, validData);
+        input >> a;
+    }
+    
+    input.close();
+    output.close();
+    
+    return 0;
+}
+
+void evaluateExpression(ifstream& inFile, ofstream& outFile, Stack<double>& stack, char& a, bool& isExpOk)
+{
+    double num;
+    
+    while(a != '=')
+    {
+        switch(a)
+        {
+            case '#':
+                inFile >> num;
+                outFile << num << " ";
+                if(!stack.isFullStack())
+                    stack.push(num);
+                else
+                {
+                    cout << "Overflow." << endl;
+                }
+                break;
+            default:
+                evaluateOpr(outFile, stack, a, isExpOk);
+        }
+        if(isExpOk)
+        {
+            inFile >> a;
+            outFile << a;
+            
+            if(ch != '#')
+                outFile << " ";
+        }
+        else
+            discardExp(inFile, outFile, a);
+    }
+}
+
+void evaluateOpr(ofstream& out, Stack<double>& stack, char& a, bool& isExpOk)
+{
+    double op1, op2;
+    
+    if(stack.isEmptyStack())
+    {
+        out << "Not enough operands";
+        isExpOk = false;
+    }
+    else
+    {
+        op2 = stack.top();
+        stack.pop();
+        
+        if(stack.isEmptyStack())
+        {
+            out << "Not enough operands";
+            isExpOk = false;
+        }
+        else
+        {
+            op1 = stack.top();
+            stack.pop();
+            
+            switch (a)
+            {
+                case '+':
+                    stack.push(op1 + op2);
+                    break;
+                case '-':
+                    stack.push(op1 - op2);
+                    break;
+                case '*':
+                    stack.push(op1 * op2);
+                    break;
+                case '/':
+                    if (op2 != 0)
+                        stack.push(op1 / op2);
+                    else
+                    {
+                        out << "Division by 0";
+                        isExpOk = false;
+                    }
+                    break;
+                default:
+                    out << "Illegal Operator";
+                    isExpOk = false;
+            }
+        }
+    }
+}
+
+void discardExp(ifstream& in, ofstream& out, char& a)
+{
+    while(ch != '=')
+    {
+        in.get(a);
+        out << a;
+    }
+}
+
+void printResult(ofstream& outFile, Stack<double>& stack, bool isExpOk)
+{
+    double result;
+    
+    if(isExpOk)
+    {
+        if(!stack.isEmptyStack())
+        {
+            result = stack.top();
+            stack.pop();
+            
+            if(stack.isEmptyStack())
+                outF << result << endl;
+            else
+                outF << "Too many operands" << endl;
+        }
+        else
+            outF << "Error in expression" << endl;
+    }
+    else
+        outF << "Error in expression" << endl;
 }
