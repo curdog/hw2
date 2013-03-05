@@ -1,6 +1,8 @@
 #include "stack.hpp"
-
+#include <cstdlib.h>
 #include <string>
+
+using namespace std;
 
 Stack::Stack()
 {
