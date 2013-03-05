@@ -1,42 +1,46 @@
-// CLASS PROVIDED:  List (an ADT for a fraction)
+// CLASS PROVIDED:  Stack
 //
 // CONSTRUCTOR for the List class:
-//   List()
-//     Description: 	constructor will initialize List objects
+//   Stack()
+//     Description: constructor will initialize Stack to NULL
 //     Preconditions: none
-//     Postcondition: creates object of type List
+//     Postcondition: creates object of type Stack
 //
 // MODIFICATION MEMBER FUNCTIONS for the List class
-//   void setsize (const char value)
-//     Description: 	set the size of the array
+//   void push()
+//     Description: pushes value onto the stack
 //     Precondition: value is an integer
 //     Postcondition: pointer is set to the address of the array
 //
-//   void insert(const int value)
-//     Description: 	fills the array
-//     Precondition: value is an integer
-//     Postcondition: first slot of the array is set to num
+//   void pop()
+//     Description:  removes values from stack, pops to output file 
+//     Precondition: if Stack is not NULL
+//     Postcondition: deletes temp or error message
 //
-//   void setcount  (const int value)
-//     Description: 	sets the memory location of the pointer
-//     Precondition: value is an integer
-//     Postcondition: location has been set to value
+//   void peek  (const int value)
+//     Description:      sets the memory location of the pointer
+//     Precondition: creates pointer and creates new Node
+//     Postcondition: top equals new Node
 //
-// CONSTANT MEMBER FUNCTIONS for the Fraction class
-//   int getcount (void) const
-//     Description: 	obtains the location of the pointer
-//     Preconditions: none
-//     Postcondition: count is returned
+//   void ~Stack()
+//     Description: destructor
+//     Precondition: none
+//     Postcondition: all the values are removed from the stack
 //
-//   int getsize(void) const
-//     Description: 	obtains the size of the array
-//     Preconditions: none
-//     Postcondition: size is returned
+//   bool FullStack();
+//     Description: true or false return
+//     Precondition: none
+//     Postcondition: returns false
+//
+//   bool EmptyStack();
+//     Description: true or false 
+//     Precondition: none
+//     Postcondition: return top == NULL
 //
 //   void print (void) const
-//     Description: 	print the values that are in the array
+//     Description:      print the values that are in the stack
 //     Preconditions: none
-//     Postcondition: values of the array are displayed on the screen
+//     Postcondition: values of the stack are displayed on the screen
 
 #ifndef STACK_
 #define STACK_
@@ -47,10 +51,17 @@ using namespace std;
 
 class Stack{
  public:
+  /*constructor*/
   Stack();
+
+  /*destructor*/
+   ~Stack();
+
   string pop();
   string peek();
-  void push( string );
+  void push( string ); 
+  bool FullStack() const;
+  bool EmptyStack() const;
  
  private:
   /*pointer to the top*/
