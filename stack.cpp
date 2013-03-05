@@ -6,7 +6,7 @@ Stack::Stack()
 {
 /*initializes top to NULL*/
   top = NULL;
-}
+}/*stack*/
 
 string Stack::pop()
 {
