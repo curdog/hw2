@@ -14,7 +14,7 @@ void printResult(ofstream& outFile, Stack<double>& stack, bool isExpOk);
 int main() 
 {
 
-Stack data; //creates an object type Stack
+  Stack data; //creates an object type Stack
 
     bool validData;
     char a;

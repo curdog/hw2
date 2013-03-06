@@ -46,6 +46,7 @@
 #define STACK_
 
 #include <string>
+#include <node.hpp>
 
 using namespace std;
 

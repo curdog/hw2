@@ -1,4 +1,6 @@
 #include "stack.hpp"
+#include "node.hpp"
+
 #include <cstdlib.h>
 #include <string>
 
@@ -18,7 +20,7 @@ string Stack::pop()
   if(top != NULL)
     {
     temp = top;
-    top = top->connect;
+    top = top->getNext();
     delete temp;
   }
   else 
@@ -27,17 +29,17 @@ string Stack::pop()
 }/*pop*/
 
 string Stack::peek(){
-
+  return top->getData();
 }
 
-void Stack::push( const Obj& new )
+void Stack::push( const Obj& newData )
 {
   Node<string> *Node1;
   /*creates new Node*/
-  Node1 = new Node;
+  Node1 = new Node<string>();
 
-  Node1->info = new;
-  Node1->connect = top;
+  Node1->setData( newData );
+  Node1->setNext(  top );
   /*top equals the new Node*/
   top = Node1;
 }/*push*/
