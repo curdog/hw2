@@ -2,7 +2,7 @@
 #include <iomanip>
 #include <fstream>
 #include "stack.cpp"
-#include "stack.h"
+#include "stack.hpp"
 
 using namespace std;
 
