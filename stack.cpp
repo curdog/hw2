@@ -15,18 +15,20 @@ Stack::Stack()
 
 string Stack::pop()
 {
-  /*creates temp*/
+  string retMe = "";
+	/*creates temp*/
   Node<string> *temp;
   
-  if(top != NULL)
-    {
-    temp = top;
-    top = top->getNext();
+  if(top != NULL) {
+		retMe = top->getData();
+		temp = top;
+		top = top->getNext();
     delete temp;
   }
   else{
-    std::cout<< "Error: You cannot pop anything from an empty stack." << std::endl;
+    cout<< "Error: You cannot pop anything from an empty stack." << endl;
   }
+	return retMe;
 }/*pop*/
 
 string Stack::peek(){

@@ -3,6 +3,7 @@
 #include <fstream>
 #include "stack.cpp"
 #include "stack.hpp"
+#include <sstream>
 
 using namespace std;
 
@@ -10,6 +11,9 @@ void evaluateExpression(ifstream& inFile, ofstream& outFile, Stack& stack, char&
 void evaluateOpr(ofstream& out, Stack& stack, char& a, bool& isExpOk);
 void discardExp(ifstream& in, ofstream& out, char& a);
 void printResult(ofstream& outFile, Stack& stack, bool isExpOk);
+
+template <class T>
+string toString( T );
 
 int main() 
 {
@@ -31,7 +35,7 @@ int main()
         return 1;
     }
     
-    output.open("output.txt");
+    output = 
     
     //output << fixed << showpoint;
     //output << setprecision(2);
@@ -56,7 +60,7 @@ int main()
 
 void evaluateExpression(ifstream& inFile, ofstream& outFile, Stack& stack, char& a, bool& isExpOk)
 {
-    double num;
+    int num;
     
     while(a != '=')
     {
@@ -66,7 +70,7 @@ void evaluateExpression(ifstream& inFile, ofstream& outFile, Stack& stack, char&
                 inFile >> num;
                 outFile << num << " ";
                 if(!stack.FullStack())
-                    stack.push(num);
+                    stack.push( to_string( num ) );
                 else
                 {
                     cout << "Exceeded limit. An overflow has occurred." << endl;
@@ -157,8 +161,7 @@ void printResult(ofstream& outFile, Stack& stack, bool isExpOk)
     {
         if(!stack.EmptyStack())
         {
-            answer = stack.top();
-            stack.pop();
+            answer = stack.pop();
             
             if(stack.EmptyStack())
                 outFile << answer << endl;
@@ -170,4 +173,11 @@ void printResult(ofstream& outFile, Stack& stack, bool isExpOk)
     }
     else
         outFile << "You have an error in the expression." << endl;
+}
+
+template <class T >
+string toString( T thing ){
+  stringstream temp;
+	temp << thing;
+	return temp.str();
 }
