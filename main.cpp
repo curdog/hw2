@@ -64,11 +64,11 @@ void evaluateExpression(ifstream& inFile, ofstream& outFile, Stack<double>& stac
             case '#':
                 inFile >> num;
                 outFile << num << " ";
-                if(!stack.isFullStack())
+                if(!stack.FullStack())
                     stack.push(num);
                 else
                 {
-                    cout << "Overflow." << endl;
+                    cout << "Exceeded limit. An overflow has occurred." << endl;
                 }
                 break;
             default:
@@ -79,7 +79,7 @@ void evaluateExpression(ifstream& inFile, ofstream& outFile, Stack<double>& stac
             inFile >> a;
             outFile << a;
             
-            if(ch != '#')
+            if(a != '#')
                 outFile << " ";
         }
         else
@@ -91,9 +91,9 @@ void evaluateOpr(ofstream& out, Stack<double>& stack, char& a, bool& isExpOk)
 {
     double op1, op2;
     
-    if(stack.isEmptyStack())
+    if(stack.EmptyStack())
     {
-        out << "Not enough operands";
+        out << "You do not have enough operands.";
         isExpOk = false;
     }
     else
@@ -101,7 +101,7 @@ void evaluateOpr(ofstream& out, Stack<double>& stack, char& a, bool& isExpOk)
         op2 = stack.top();
         stack.pop();
         
-        if(stack.isEmptyStack())
+        if(stack.EmptyStack())
         {
             out << "Not enough operands";
             isExpOk = false;
@@ -127,12 +127,12 @@ void evaluateOpr(ofstream& out, Stack<double>& stack, char& a, bool& isExpOk)
                         stack.push(op1 / op2);
                     else
                     {
-                        out << "Division by 0";
+                        out << "You cannot divide by 0.";
                         isExpOk = false;
                     }
                     break;
                 default:
-                    out << "Illegal Operator";
+                    out << "You do not have a valid Operator";
                     isExpOk = false;
             }
         }
@@ -141,7 +141,7 @@ void evaluateOpr(ofstream& out, Stack<double>& stack, char& a, bool& isExpOk)
 
 void discardExp(ifstream& in, ofstream& out, char& a)
 {
-    while(ch != '=')
+    while(a != '=')
     {
         in.get(a);
         out << a;
@@ -150,23 +150,23 @@ void discardExp(ifstream& in, ofstream& out, char& a)
 
 void printResult(ofstream& outFile, Stack<double>& stack, bool isExpOk)
 {
-    double result;
+    double answer;
     
     if(isExpOk)
     {
-        if(!stack.isEmptyStack())
+        if(!stack.EmptyStack())
         {
-            result = stack.top();
+            answer = stack.top();
             stack.pop();
             
-            if(stack.isEmptyStack())
-                outF << result << endl;
+            if(stack.EmptyStack())
+                outFile << answer << endl;
             else
-                outF << "Too many operands" << endl;
+                outFile << "You have too many operands." << endl;
         }
         else
-            outF << "Error in expression" << endl;
+            outFile << "You have an error in the expression." << endl;
     }
     else
-        outF << "Error in expression" << endl;
+        outFile << "You have an error in the expression." << endl;
 }
