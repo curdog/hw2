@@ -6,10 +6,10 @@
 
 using namespace std;
 
-void evaluateExpression(ifstream& inFile, ofstream& outFile, Stack<double>& stack, char& a, bool& isExpOk);
-void evaluateOpr(ofstream& out, Stack<double>& stack, char& a, bool& isExpOk);
+void evaluateExpression(ifstream& inFile, ofstream& outFile, Stack& stack, char& a, bool& isExpOk);
+void evaluateOpr(ofstream& out, Stack& stack, char& a, bool& isExpOk);
 void discardExp(ifstream& in, ofstream& out, char& a);
-void printResult(ofstream& outFile, Stack<double>& stack, bool isExpOk);
+void printResult(ofstream& outFile, Stack& stack, bool isExpOk);
 
 int main() 
 {
@@ -18,10 +18,11 @@ int main()
 
     bool validData;
     char a;
-    Stack<double> stack(100);
+    Stack stack;
     ifstream input;
     ofstream output;
-    
+    bool expressionOk;
+
     input.open("input.txt");
     
     if(!input)
@@ -32,13 +33,13 @@ int main()
     
     output.open("output.txt");
     
-    output << fixed << showpoint;
-    output << setprecision(2);
+    //output << fixed << showpoint;
+    //output << setprecision(2);
     
     input >> a;
     while(input)
     {
-        stack.initializeStack();
+      //stack.initializeStack();
         expressionOk = true;
         output << a;
         
@@ -53,7 +54,7 @@ int main()
     return 0;
 }
 
-void evaluateExpression(ifstream& inFile, ofstream& outFile, Stack<double>& stack, char& a, bool& isExpOk)
+void evaluateExpression(ifstream& inFile, ofstream& outFile, Stack& stack, char& a, bool& isExpOk)
 {
     double num;
     
@@ -87,9 +88,9 @@ void evaluateExpression(ifstream& inFile, ofstream& outFile, Stack<double>& stac
     }
 }
 
-void evaluateOpr(ofstream& out, Stack<double>& stack, char& a, bool& isExpOk)
+void evaluateOpr(ofstream& out, Stack& stack, char& a, bool& isExpOk)
 {
-    double op1, op2;
+    int op1, op2;
     
     if(stack.EmptyStack())
     {
@@ -148,9 +149,9 @@ void discardExp(ifstream& in, ofstream& out, char& a)
     }
 }
 
-void printResult(ofstream& outFile, Stack<double>& stack, bool isExpOk)
+void printResult(ofstream& outFile, Stack& stack, bool isExpOk)
 {
-    double answer;
+    int answer;
     
     if(isExpOk)
     {

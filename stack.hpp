@@ -46,7 +46,7 @@
 #define STACK_
 
 #include <string>
-#include <node.hpp>
+#include "node.hpp"
 
 using namespace std;
 
@@ -60,15 +60,13 @@ class Stack{
 
   string pop();
   string peek();
-  void push( string ); 
+  void push( string& ); 
   bool FullStack() const;
   bool EmptyStack() const;
  
  private:
   /*pointer to the top*/
-  Node<string> *top;
+  Node<string>* top;
 };
-
-//copy past node code here :-)
 
 #endif /*STACK_H*/

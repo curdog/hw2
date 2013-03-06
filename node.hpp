@@ -40,6 +40,7 @@
 template <class prim> class Node{
 
 public:
+  Node();
   Node( prim );
   Node( prim, Node<prim>* );
   ~Node();
