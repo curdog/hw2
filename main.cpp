@@ -7,10 +7,10 @@
 
 using namespace std;
 
-void evaluateExpression(ifstream& inFile, ofstream& outFile, Stack& stack, char& a, bool& isExpOk);
-void evaluateOpr(ofstream& out, Stack& stack, char& a, bool& isExpOk);
-void discardExp(ifstream& in, ofstream& out, char& a);
-void printResult(ofstream& outFile, Stack& stack, bool isExpOk);
+void evaluateExpression(ifstream& inFile, Stack& stack, char& a, bool& isExpOk);
+void evaluateOprStack& stack, char& a, bool& isExpOk);
+void discardExp(ifstream& in, char& a);
+void printResult(Stack& stack, bool isExpOk);
 
 template <class T>
 string toString( T );
@@ -24,7 +24,6 @@ int main()
     char a;
     Stack stack;
     ifstream input;
-    ofstream output;
     bool expressionOk;
 
     input.open("input.txt");
@@ -35,7 +34,7 @@ int main()
         return 1;
     }
     
-    output = 
+    cout = 
     
     //output << fixed << showpoint;
     //output << setprecision(2);
@@ -45,20 +44,19 @@ int main()
     {
       //stack.initializeStack();
         expressionOk = true;
-        output << a;
+        cout << a;
         
-        evaluateExpression(input, output, stack, a, validData);
-        printResult(output, stack, validData);
+        evaluateExpression(input, stack, a, validData);
+        printResult(stack, validData);
         input >> a;
     }
     
     input.close();
-    output.close();
     
     return 0;
 }
 
-void evaluateExpression(ifstream& inFile, ofstream& outFile, Stack& stack, char& a, bool& isExpOk)
+void evaluateExpression(ifstream& inFile, Stack& stack, char& a, bool& isExpOk)
 {
     int num;
     
@@ -68,37 +66,37 @@ void evaluateExpression(ifstream& inFile, ofstream& outFile, Stack& stack, char&
         {
             case '#':
                 inFile >> num;
-                outFile << num << " ";
+                cout << num << " ";
                 if(!stack.FullStack())
                     stack.push( to_string( num ) );
                 else
                 {
-                    cout << "Exceeded limit. An overflow has occurred." << endl;
+                    cout << "Error: Full" << endl;
                 }
                 break;
             default:
-                evaluateOpr(outFile, stack, a, isExpOk);
+                evaluateOpr(stack, a, isExpOk);
         }
         if(isExpOk)
         {
             inFile >> a;
-            outFile << a;
+            cout << a;
             
             if(a != '#')
-                outFile << " ";
+                cout << " ";
         }
         else
-            discardExp(inFile, outFile, a);
+            discardExp(inFile, a);
     }
 }
 
-void evaluateOpr(ofstream& out, Stack& stack, char& a, bool& isExpOk)
+void evaluateOpr(Stack& stack, char& a, bool& isExpOk)
 {
     int op1, op2;
     
     if(stack.EmptyStack())
     {
-        out << "You do not have enough operands.";
+        cout << "Error";
         isExpOk = false;
     }
     else
@@ -108,7 +106,7 @@ void evaluateOpr(ofstream& out, Stack& stack, char& a, bool& isExpOk)
         
         if(stack.EmptyStack())
         {
-            out << "Not enough operands";
+            cout << "Error";
             isExpOk = false;
         }
         else
@@ -132,28 +130,28 @@ void evaluateOpr(ofstream& out, Stack& stack, char& a, bool& isExpOk)
                         stack.push(op1 / op2);
                     else
                     {
-                        out << "You cannot divide by 0.";
+                        cout << "Not divisible by 0";
                         isExpOk = false;
                     }
                     break;
                 default:
-                    out << "You do not have a valid Operator";
+                    cout << "Invalid Operator";
                     isExpOk = false;
             }
         }
     }
 }
 
-void discardExp(ifstream& in, ofstream& out, char& a)
+void discardExp(ifstream& in, char& a)
 {
     while(a != '=')
     {
         in.get(a);
-        out << a;
+        cout << a;
     }
 }
 
-void printResult(ofstream& outFile, Stack& stack, bool isExpOk)
+void printResult(Stack& stack, bool isExpOk)
 {
     int answer;
     
@@ -164,15 +162,15 @@ void printResult(ofstream& outFile, Stack& stack, bool isExpOk)
             answer = stack.pop();
             
             if(stack.EmptyStack())
-                outFile << answer << endl;
+                cout << answer << endl;
             else
-                outFile << "You have too many operands." << endl;
+                cout << "Too many operands." << endl;
         }
         else
-            outFile << "You have an error in the expression." << endl;
+            cout << "Error in expression." << endl;
     }
     else
-        outFile << "You have an error in the expression." << endl;
+        cout << "Error in expression." << endl;
 }
 
 template <class T >
