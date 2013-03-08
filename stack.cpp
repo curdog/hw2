@@ -32,10 +32,15 @@ string Stack::pop()
 }/*pop*/
 
 string Stack::peek(){
-  return top->getData();
+  if( top ){
+    return top->getData();
+  }
+  else {
+    return "";
+  }
 }
 
-void Stack::push(  string& newData )
+void Stack::push(  string newData )
 {
   Node<string> *Node1;
   /*creates new Node*/

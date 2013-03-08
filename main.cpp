@@ -4,6 +4,7 @@
 #include "stack.cpp"
 #include "stack.hpp"
 #include <sstream>
+#include <string>
 
 using namespace std;
 
@@ -12,8 +13,14 @@ void evaluateOpr(ofstream& out, Stack& stack, char& a, bool& isExpOk);
 void discardExp(ifstream& in, ofstream& out, char& a);
 void printResult(ofstream& outFile, Stack& stack, bool isExpOk);
 
+bool isNumber( string );
+bool isOperator( string );
+
 template <class T>
 string toString( T );
+
+
+int intFromString( string );
 
 int main() 
 {
@@ -35,15 +42,9 @@ int main()
         return 1;
     }
     
-    output = 
-    
-    //output << fixed << showpoint;
-    //output << setprecision(2);
-    
     input >> a;
     while(input)
     {
-      //stack.initializeStack();
         expressionOk = true;
         output << a;
         
@@ -69,13 +70,9 @@ void evaluateExpression(ifstream& inFile, ofstream& outFile, Stack& stack, char&
             case '#':
                 inFile >> num;
                 outFile << num << " ";
-                if(!stack.FullStack())
-                    stack.push( to_string( num ) );
-                else
-                {
-                    cout << "Exceeded limit. An overflow has occurred." << endl;
-                }
-                break;
+                
+                    stack.push( toString( num ) );
+								break;
             default:
                 evaluateOpr(outFile, stack, a, isExpOk);
         }
@@ -103,8 +100,7 @@ void evaluateOpr(ofstream& out, Stack& stack, char& a, bool& isExpOk)
     }
     else
     {
-        op2 = stack.top();
-        stack.pop();
+			op2 = intFromString( stack.pop() ); 
         
         if(stack.EmptyStack())
         {
@@ -113,23 +109,22 @@ void evaluateOpr(ofstream& out, Stack& stack, char& a, bool& isExpOk)
         }
         else
         {
-            op1 = stack.top();
-            stack.pop();
+            op1 = intFromString( stack.pop() );
             
             switch (a)
             {
                 case '+':
-                    stack.push(op1 + op2);
+                    stack.push( toString( op1 + op2 ) );
                     break;
                 case '-':
-                    stack.push(op1 - op2);
+                    stack.push( toString( op1 - op2 ) );
                     break;
                 case '*':
-                    stack.push(op1 * op2);
+                    stack.push( toString(  op1 * op2  ) );
                     break;
                 case '/':
                     if (op2 != 0)
-                        stack.push(op1 / op2);
+                        stack.push( toString( op1 / op2 ) );
                     else
                     {
                         out << "You cannot divide by 0.";
@@ -161,7 +156,7 @@ void printResult(ofstream& outFile, Stack& stack, bool isExpOk)
     {
         if(!stack.EmptyStack())
         {
-            answer = stack.pop();
+					answer = intFromString(stack.pop());
             
             if(stack.EmptyStack())
                 outFile << answer << endl;
@@ -174,10 +169,28 @@ void printResult(ofstream& outFile, Stack& stack, bool isExpOk)
     else
         outFile << "You have an error in the expression." << endl;
 }
+		 
+bool isOperator( string s ){
+	string valid[] = { "+", "-", "/", "*","(", ")" };
+	for (int i; i < 6; i++) {
+		if( s.find(valid[i])){
+			return true;
+		}
+	}
+	return false;
+}
 
-template <class T >
+template <class T>
 string toString( T thing ){
   stringstream temp;
 	temp << thing;
-	return temp.str();
+	string retMe = temp.str();
+	return (string)retMe.c_str();
+}
+
+
+int intFromString( string s ){
+	int conv;
+	stringstream(s) >> conv;
+	return conv;
 }
