@@ -28,11 +28,13 @@ int main()
   Stack data; //creates an object type Stack
 	
 	bool validData = true;
+	bool sectionDone = false;
 	char a;
 	Stack stack;
 	stringstream tempOut;
+	stringstream inputsl;
 	ifstream input;
-		
+	
 	input.open("input.txt");
 	
 	if(!input)
@@ -46,69 +48,91 @@ int main()
 	
 	while(!input.eof())
 	{
-		input >> a;
-		
-		//file seperator junk new equation so eval what we got unless its bad datas
-		if( a == '\n' || a == '\r' ){
-			//rest of data off of stack
+		//for scope
+		{
 			string s;
-			do {
-				if ( stack.peek() == ")" )
-					validData == false;
-			} while( stack.peek() != "" );
-			evaluateExpression(input, stack, validData);
-			printResult(stack, validData);
-		}
-		validData = true;
-		//numbers
-		if( isNumber(toString(a))) {
-			tempOut << a;
-		}
-		//operators
-		if( isOperator(toString(a))){
-			while( isOperator( stack.peek() ) ){
-				//precedence handleing
-				
-				if( stack.peek() == "-" || stack.peek() == "+" ){
-					if( a == '*' || a == '/' ){ 
-						//do nothing 
-					} else {
-						tempOut << stack.pop(); //hit another plus/- pop
-					}
-
-				}
-				
-				if( stack.peek() == "*" || stack.peek() == "/" ){
-					if( a == '+' || a == '-' )
-						stack.pop(); //pop
-					else {
-						 //do nothing for other / *
-					}
-
-				}	
-				
-			}
-			stack.push(toString(a));
-		}
-		
-		//parens
-		if( a == '(' ){
-			stack.push( toString(a) );
-		}
-		else if ( a == ')' ) {
-			string popped;
-			do {
-				popped = stack.pop();
-				if( toString(a) != "(" || toString(a) != ")" ) 
-					tempOut << a;
-			} while (popped != "(");
+			input >> s;
+			inputsl << s;
 			
 		}
-
-		
-		
+		cout << inputsl.str();
+		while (!sectionDone) {
+			
+			if( inputsl.eof() ){
+				sectionDone = true;
+				continue;
+			}
+			
+				
+			
+			inputsl >> a;
+			
+			cout << "Read " << a << endl;
+			cout << "Sting Stream" << tempOut.str() << endl;
+			
+			validData = true;
+			//numbers
+			if( isNumber(toString(a))) {
+				tempOut << a;
+				cout << tempOut.str();
+			}
+			//operators
+			if( isOperator(toString(a))){
+				while( isOperator( stack.peek() ) ){
+					//precedence handleing
+					
+					if( stack.peek() == "-" || stack.peek() == "+" ){
+						if( a == '*' || a == '/' ){ 
+							//do nothing 
+						} else {
+							tempOut << stack.pop(); //hit another plus/- pop
+						}
+						
+					}
+					
+					if( stack.peek() == "*" || stack.peek() == "/" ){
+						if( a == '+' || a == '-' )
+							tempOut << stack.pop(); //pop
+						else {
+							//do nothing for other / *
+						}
+						
+					}	
+					
+				}
+				stack.push(toString(a));// push oper onto stack
+			}
+			
+			//parens
+			if( a == '(' ){
+				stack.push( toString(a) );
+			}
+			else if ( a == ')' ) {
+				string popped;
+				do {
+					popped = stack.pop();
+					if( toString(a) != "(" || toString(a) != ")" ) 
+						tempOut << a;
+				} while (popped != "(");
+				
+			}
+			
+			
+			
+		}
+		//rest of data off of stack
+		cout << "Done Transforming\n";
+		do {
+			if ( stack.peek() == ")" ){
+				validData == false;
+				break;
+			}
+			tempOut << stack.pop();
+		} while( stack.peek() != "" );
+		cout << tempOut;
+		evaluateExpression(input, stack, validData);
+		printResult(stack, validData);
 	}
-	
 	input.close();
 	
 	return 0;
@@ -229,8 +253,8 @@ bool isOperator( string s ){
 	if( s.length() <= 2){ //for null terminated strings
 	  return false;
 	}
-	for (int i; i < 6; i++) {
-		if( s.find(valid[i])){
+	for (int i=0; i < 6; i++) {
+		if( !(s.find(valid[i]) == string::npos ) ){
 			return true;
 		}
 	}
@@ -240,8 +264,8 @@ bool isOperator( string s ){
 
 bool isNumber( string s ){
   string valid[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0" };
-  for (int i; i < 10; i++) {
-		if( s.find(valid[i])){
+  for (int i=0; i < 10; i++) {
+		if( !(s.find(valid[i]) == string::npos ) ){
 			return true;
 		}
 	}
