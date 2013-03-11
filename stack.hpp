@@ -61,8 +61,6 @@ class Stack{
   string pop();
   string peek();
   void push( string ); 
-  bool FullStack() const;
-  bool EmptyStack() const;
  
  private:
   /*pointer to the top*/

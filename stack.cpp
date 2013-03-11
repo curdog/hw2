@@ -13,6 +13,9 @@ Stack::Stack()
   top = NULL;
 }/*stack*/
 
+Stack::~Stack(){
+	while ( pop() != "");
+}
 string Stack::pop()
 {
   string retMe = "";
@@ -25,9 +28,7 @@ string Stack::pop()
 		top = top->getNext();
     delete temp;
   }
-  else{
-    cout<< "Error: You cannot pop anything from an empty stack." << endl;
-  }
+  
 	return retMe;
 }/*pop*/
 
