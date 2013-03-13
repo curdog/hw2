@@ -14,7 +14,8 @@ Stack::Stack()
 }/*stack*/
 
 Stack::~Stack(){
-	while ( pop() != "");
+	while ( top!=NULL) 
+		pop();
 }
 string Stack::pop()
 {

@@ -12,7 +12,7 @@ void evaluateExpression(stringstream&, Stack&, bool& );
 void evaluateOpr( Stack&, string& , bool& );
 void printResult(Stack& stack, bool isExpOk);
 
-//helper data val functions.
+//helper data validation functions.
 bool isNumber( string );
 bool isOperator( string );
 
@@ -38,7 +38,7 @@ int main()
 	
 	if(!input)
 	{
-		cout << "The input file does not exist." << endl;
+		cout << "The input file does not exist.\n";
 		return 1;
 	}
 	
@@ -47,41 +47,28 @@ int main()
 	
 	while(!input.eof())
 	{
-		//for scope
-		{
+		//for scope, s is temporary for line read
+		
 			string s;
 			input >> s;
+		  inputsl.clear();
+		  inputsl.flush();
 			inputsl << s;
 			
-		}
 		
-		cout << "What we got" << inputsl.str();
-		while (!sectionDone) {
-			
-			//check for doneness for equation 
-			if( inputsl.eof() ){
-				cout << "done with section" << endl;
-				sectionDone = true;
-				continue;
-			}
-			
-				
+		
+		while (!inputsl.eof()) {
 			
 			inputsl >> a;
-			
-			cout << "Read " << a << endl;
-			cout << "String Stream" << tempOut.str() << endl;
 			
 			validData = true;
 			//numbers
 			if( isNumber(toString(a))) {
-				cout << "got a number" <<endl;
 				tempOut << a;
-				cout << tempOut.str();
 			}
 			//operators
-			if( isOperator(toString(a))){
-				cout << "Got an op" << endl;
+			else if( isOperator(toString(a))){
+				
 				while( isOperator( stack.peek() ) ){
 					//precedence handleing
 					
@@ -108,7 +95,7 @@ int main()
 			}
 			
 			//parens
-			if( a == '(' ){
+			else if( a == '(' ){
 				stack.push( toString(a) );
 			}
 			else if ( a == ')' ) {
@@ -121,8 +108,11 @@ int main()
 				
 			}
 			
-			
-			
+			//all case
+			else {
+				cout << "Incorrect Data format.  Results may be incorrect.\n";
+			}
+
 		}
 		//rest of data off of stack
 		cout << "Done Transforming\n";
@@ -134,9 +124,12 @@ int main()
 			tempOut << stack.pop();
 		} while( stack.peek() != "" );
 		
-		cout << tempOut;
+		cout << "RPN: " << tempOut.str() << endl;
 		evaluateExpression(tempOut, stack, validData);
 		printResult(stack, validData);
+		
+		//clear stack
+		while (stack.pop() != "");
 	}
 	input.close();
 	
@@ -145,20 +138,21 @@ int main()
 
 void evaluateExpression(stringstream& expression, Stack& stack, bool& isExpOk)
 {
-		char a;
-		while (!expression.eof()) {
-			expression >> a;
-			if( isNumber( toString( a )) ){
-				 stack.push(toString(a));
-			}
-			else if( isOperator(toString(a)) ){
-					
-					 
-			} else {
-				
-			}
+	char a;
+	while (!expression.eof()) {
+		expression >> a;
+		if( isNumber( toString( a )) ){
+			stack.push( toString(a) );
 		}
-
+		else if( isOperator(toString(a)) ){
+			string s = toString(a);
+			evaluateOpr( stack, s , isExpOk );
+			
+		} else {
+			cout << "Incorrect Data Results may be incorrect\n";
+		}
+	}
+	
 }
 
 void evaluateOpr(Stack& stack, string& a, bool& isExpOk)
@@ -168,7 +162,7 @@ void evaluateOpr(Stack& stack, string& a, bool& isExpOk)
 	op2s = stack.pop(); 
 	if(op2s == "")
 	{
-		cout << "Error";
+		cout << "Error\n";
 		isExpOk = false;
 	}
 	else
@@ -177,17 +171,15 @@ void evaluateOpr(Stack& stack, string& a, bool& isExpOk)
 		op1s = stack.pop();
 		if(op1s == "")
 		{
-			cout << "Error";
+			cout << "Error\n";
 			isExpOk = false;
 		}
 		else
 		{
 			op1 = intFromString(op1s);
 			
-			
-			
 			if (a == "+"){ 
-					stack.push( toString( op1 + op2 ) );
+				stack.push( toString( op1 + op2 ) );
 			}else if (a == "-") {
 				stack.push( toString( op1 - op2 ) );
 			}else if (a=="*") {
@@ -195,10 +187,8 @@ void evaluateOpr(Stack& stack, string& a, bool& isExpOk)
 			}else if (a=="/" && op2 != 0 ) {
 				stack.push( toString( op1 / op2 ) );
 			} else {
-				cout << "Not a valid Expression.  Results may be incorrect.";
+				cout << "Not a valid Expression.  Results may be incorrect.\n";
 			}
-
-										
 			
 		}
 	}
@@ -213,7 +203,7 @@ void printResult(Stack& stack, bool isExpOk)
 	if(isExpOk)
 	{
 		
-		answer = intFromString(stack.pop());
+		answer = stack.pop();
 		
 		
 		if( answer == "")
@@ -228,7 +218,7 @@ void printResult(Stack& stack, bool isExpOk)
 
 bool isOperator( string s ){
 	string valid[] = { "+", "-", "/", "*" };
-
+	
 	for (int i=0; i < 4; i++) {
 		if( !(s.find(valid[i]) == string::npos ) ){
 			return true;
