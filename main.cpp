@@ -7,10 +7,9 @@
 
 using namespace std;
 
-void infixToPostfix( ifstream&, Stack& );
-void evaluateExpression(ifstream&, Stack&, bool& );
-void evaluateOpr( Stack&, char& , bool& );
-void discardExp(ifstream& in, char& a);
+
+void evaluateExpression(stringstream&, Stack&, bool& );
+void evaluateOpr( Stack&, string& , bool& );
 void printResult(Stack& stack, bool isExpOk);
 
 //helper data val functions.
@@ -55,10 +54,13 @@ int main()
 			inputsl << s;
 			
 		}
-		cout << inputsl.str();
+		
+		cout << "What we got" << inputsl.str();
 		while (!sectionDone) {
 			
+			//check for doneness for equation 
 			if( inputsl.eof() ){
+				cout << "done with section" << endl;
 				sectionDone = true;
 				continue;
 			}
@@ -68,16 +70,18 @@ int main()
 			inputsl >> a;
 			
 			cout << "Read " << a << endl;
-			cout << "Sting Stream" << tempOut.str() << endl;
+			cout << "String Stream" << tempOut.str() << endl;
 			
 			validData = true;
 			//numbers
 			if( isNumber(toString(a))) {
+				cout << "got a number" <<endl;
 				tempOut << a;
 				cout << tempOut.str();
 			}
 			//operators
 			if( isOperator(toString(a))){
+				cout << "Got an op" << endl;
 				while( isOperator( stack.peek() ) ){
 					//precedence handleing
 					
@@ -129,8 +133,9 @@ int main()
 			}
 			tempOut << stack.pop();
 		} while( stack.peek() != "" );
+		
 		cout << tempOut;
-		evaluateExpression(input, stack, validData);
+		evaluateExpression(tempOut, stack, validData);
 		printResult(stack, validData);
 	}
 	input.close();
@@ -138,37 +143,25 @@ int main()
 	return 0;
 }
 
-void evaluateExpression(ifstream& inFile, Stack& stack, bool& isExpOk)
+void evaluateExpression(stringstream& expression, Stack& stack, bool& isExpOk)
 {
-	char num;
-	char a;
-	while(a != '=')
-	{
-		switch(a)
-		{
-			case '#':
-				inFile >> num;
-				cout << num << " ";
+		char a;
+		while (!expression.eof()) {
+			expression >> a;
+			if( isNumber( toString( a )) ){
+				 stack.push(toString(a));
+			}
+			else if( isOperator(toString(a)) ){
+					
+					 
+			} else {
 				
-				stack.push( toString( num ) );
-				break;
-			default:
-	      evaluateOpr(stack, a, isExpOk);
+			}
 		}
-		if(isExpOk)
-		{
-			inFile >> a;
-			cout << a;
-			
-			if(a != '#')
-				cout << " ";
-		}
-		else
-			discardExp(inFile, a);
-	}
+
 }
 
-void evaluateOpr(Stack& stack, char& a, bool& isExpOk)
+void evaluateOpr(Stack& stack, string& a, bool& isExpOk)
 {
 	string op1s, op2s;
 	int op1, op2;
@@ -191,42 +184,27 @@ void evaluateOpr(Stack& stack, char& a, bool& isExpOk)
 		{
 			op1 = intFromString(op1s);
 			
-			switch (a)
-			{
-				case '+':
+			
+			
+			if (a == "+"){ 
 					stack.push( toString( op1 + op2 ) );
-					break;
-				case '-':
-					stack.push( toString( op1 - op2 ) );
-					break;
-				case '*':
-					stack.push( toString(  op1 * op2  ) );
-					break;
-				case '/':
-					if (op2 != 0)
-						stack.push( toString( op1 / op2 ) );
-					else
-					{
-						cout << "Not divisible by 0";
-						isExpOk = false;
-					}
-					break;
-				default:
-					cout << "Invalid Operator";
-					isExpOk = false;
+			}else if (a == "-") {
+				stack.push( toString( op1 - op2 ) );
+			}else if (a=="*") {
+				stack.push( toString(  op1 * op2  ) );
+			}else if (a=="/" && op2 != 0 ) {
+				stack.push( toString( op1 / op2 ) );
+			} else {
+				cout << "Not a valid Expression.  Results may be incorrect.";
 			}
+
+										
+			
 		}
 	}
 }
 
-void discardExp(ifstream& in, char& a)
-{
-	while(a != '=')
-	{
-		in.get(a);
-		cout << a;
-	}
-}
+
 
 void printResult(Stack& stack, bool isExpOk)
 {
@@ -249,11 +227,9 @@ void printResult(Stack& stack, bool isExpOk)
 }
 
 bool isOperator( string s ){
-	string valid[] = { "+", "-", "/", "*","(", ")" };
-	if( s.length() <= 2){ //for null terminated strings
-	  return false;
-	}
-	for (int i=0; i < 6; i++) {
+	string valid[] = { "+", "-", "/", "*" };
+
+	for (int i=0; i < 4; i++) {
 		if( !(s.find(valid[i]) == string::npos ) ){
 			return true;
 		}
